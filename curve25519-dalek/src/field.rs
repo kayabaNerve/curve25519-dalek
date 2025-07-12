@@ -683,6 +683,15 @@ mod group {
             .into()
         }
     }
+
+    #[cfg(feature = "group-bits")]
+    #[test]
+    fn test_ff_field_element() {
+        use rand_core::TryRngCore;
+        ff_group_tests::prime_field::test_prime_field_bits::<_, FfFieldElement>(
+            &mut rand_core::OsRng.unwrap_err(),
+        )
+    }
 }
 #[cfg(feature = "group")]
 pub use group::FfFieldElement;
