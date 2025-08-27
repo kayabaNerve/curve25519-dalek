@@ -123,7 +123,7 @@ impl FieldElement {
         fe_f += &top_bits_sum;
 
         // Now add the high half into fe_f. The RHS is multiplied by 2^256 ≡ 38 (mod q)
-        const THIRTY_EIGHT: FieldElement = FieldElement::const_from_bytes([
+        const THIRTY_EIGHT: FieldElement = FieldElement::from_bytes(&[
             38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0,
         ]);
@@ -581,24 +581,24 @@ mod group {
         const NUM_BITS: u32 = 255;
         const CAPACITY: u32 = 254;
 
-        const TWO_INV: Self = Self(FieldElement::const_from_bytes([
+        const TWO_INV: Self = Self(FieldElement::from_bytes(&[
             247, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
             255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 63,
         ]));
-        const MULTIPLICATIVE_GENERATOR: Self = Self(FieldElement::const_from_bytes([
+        const MULTIPLICATIVE_GENERATOR: Self = Self(FieldElement::from_bytes(&[
             2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0,
         ]));
         const S: u32 = 2;
-        const ROOT_OF_UNITY: Self = Self(FieldElement::const_from_bytes([
+        const ROOT_OF_UNITY: Self = Self(FieldElement::from_bytes(&[
             176, 160, 14, 74, 39, 27, 238, 196, 120, 228, 47, 173, 6, 24, 67, 47, 167, 215, 251,
             61, 153, 0, 77, 43, 11, 223, 193, 79, 128, 36, 131, 43,
         ]));
-        const ROOT_OF_UNITY_INV: Self = Self(FieldElement::const_from_bytes([
+        const ROOT_OF_UNITY_INV: Self = Self(FieldElement::from_bytes(&[
             61, 95, 241, 181, 216, 228, 17, 59, 135, 27, 208, 82, 249, 231, 188, 208, 88, 40, 4,
             194, 102, 255, 178, 212, 244, 32, 62, 176, 127, 219, 124, 84,
         ]));
-        const DELTA: Self = Self(FieldElement::const_from_bytes([
+        const DELTA: Self = Self(FieldElement::from_bytes(&[
             16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0,
         ]));
@@ -628,8 +628,8 @@ mod group {
 
     impl FfFieldElement {
         /// Create a `FfFieldElement` at compile time.
-        pub const fn const_from_bytes(bytes: [u8; 32]) -> Self {
-            Self(FieldElement::const_from_bytes(bytes))
+        pub const fn from_bytes(bytes: &[u8; 32]) -> Self {
+            Self(FieldElement::from_bytes(bytes))
         }
     }
 }

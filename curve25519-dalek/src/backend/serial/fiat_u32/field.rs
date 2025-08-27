@@ -194,35 +194,6 @@ impl FieldElement2625 {
         FieldElement2625(fiat_25519_tight_field_element(limbs))
     }
 
-    pub(crate) const fn const_from_bytes(bytes: [u8; 32]) -> FieldElement51 {
-        let mut limbs = [0u64; 5];
-        let mut i = 0;
-        while i < bytes.len() {
-            let bits = 8 * i;
-            let j = bits / 51;
-            limbs[j] |= (bytes[i] as u64) << (bits % 51);
-            limbs[j] &= (1 << 51) - 1;
-            if (j + 1) < 5 {
-                if let Some(unincluded_bits) = ((bits % 51) + 8).checked_sub(51) {
-                    limbs[j + 1] |= (bytes[i] as u64) >> (8 - unincluded_bits);
-                }
-            }
-            i += 1;
-        }
-
-        let mut limbs_32 = [0u32; 10];
-        let mut i = 0;
-        while i < limbs.len() {
-            // 26
-            limbs_32[2 * i] = (limbs[i] & ((1 << 26) - 1)) as u32;
-            // 25
-            limbs_32[(2 * i) + 1] = (limbs[i] >> 26) as u32;
-            i += 1;
-        }
-
-        FieldElement2625(fiat_25519_tight_field_element(limbs_32))
-    }
-
     /// The scalar \\( 0 \\).
     pub const ZERO: FieldElement2625 = FieldElement2625::from_limbs([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     /// The scalar \\( 1 \\).
@@ -260,7 +231,7 @@ impl FieldElement2625 {
     /// encoding of every field element should decode, re-encode to
     /// the canonical encoding, and check that the input was
     /// canonical.
-    pub fn from_bytes(data: &[u8; 32]) -> FieldElement2625 {
+    pub const fn from_bytes(data: &[u8; 32]) -> FieldElement2625 {
         let mut temp = [0u8; 32];
         temp.copy_from_slice(data);
         temp[31] &= 127u8;
