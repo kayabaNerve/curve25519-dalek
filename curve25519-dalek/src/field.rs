@@ -354,7 +354,7 @@ mod group {
         iter::{Product, Sum},
         ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign},
     };
-    use ff::{Field, FromUniformBytes, PrimeField};
+    use group::ff::{Field, FromUniformBytes, PrimeField};
     use rand_core::RngCore;
     use subtle::{Choice, ConditionallySelectable, ConstantTimeEq, CtOption};
 
@@ -605,14 +605,14 @@ mod group {
     }
 
     #[cfg(feature = "group-bits")]
-    impl ff::PrimeFieldBits for FfFieldElement {
+    impl group::ff::PrimeFieldBits for FfFieldElement {
         type ReprBits = [u8; 32];
 
-        fn to_le_bits(&self) -> ff::FieldBits<Self::ReprBits> {
+        fn to_le_bits(&self) -> group::ff::FieldBits<Self::ReprBits> {
             self.to_repr().into()
         }
 
-        fn char_le_bits() -> ff::FieldBits<Self::ReprBits> {
+        fn char_le_bits() -> group::ff::FieldBits<Self::ReprBits> {
             [
                 237, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
                 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 127,
@@ -634,7 +634,7 @@ mod group {
     }
 }
 #[cfg(feature = "group")]
-pub use group::FfFieldElement;
+pub use self::group::FfFieldElement;
 
 #[cfg(test)]
 mod test {
