@@ -44,6 +44,7 @@ use fiat_crypto::curve25519_64::*;
 /// The backend-specific type `FieldElement51` should not be used
 /// outside of the `curve25519_dalek::field` module.
 #[derive(Copy, Clone)]
+#[repr(transparent)]
 pub struct FieldElement51(pub(crate) fiat_25519_tight_field_element);
 
 impl Debug for FieldElement51 {
@@ -169,6 +170,24 @@ impl ConditionallySelectable for FieldElement51 {
 
 impl FieldElement51 {
     pub(crate) const fn from_limbs(limbs: [u64; 5]) -> FieldElement51 {
+        FieldElement51(fiat_25519_tight_field_element(limbs))
+    }
+
+    pub(crate) const fn const_from_bytes(bytes: [u8; 32]) -> FieldElement51 {
+        let mut limbs = [0u64; 5];
+        let mut i = 0;
+        while i < bytes.len() {
+            let bits = 8 * i;
+            let j = bits / 51;
+            limbs[j] |= (bytes[i] as u64) << (bits % 51);
+            limbs[j] &= (1 << 51) - 1;
+            if (j + 1) < 5 {
+                if let Some(unincluded_bits) = ((bits % 51) + 8).checked_sub(51) {
+                    limbs[j + 1] |= (bytes[i] as u64) >> (8 - unincluded_bits);
+                }
+            }
+            i += 1;
+        }
         FieldElement51(fiat_25519_tight_field_element(limbs))
     }
 

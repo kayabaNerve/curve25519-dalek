@@ -51,29 +51,12 @@ fn main() {
     }
 
     // Backend overrides / defaults
-    let curve25519_dalek_backend =
-        match std::env::var("CARGO_CFG_CURVE25519_DALEK_BACKEND").as_deref() {
-            Ok("fiat") => "fiat",
-            Ok("serial") => "serial",
-            Ok("simd") => {
-                // simd can only be enabled on x86_64 & 64bit target_pointer_width
-                match is_capable_simd(&target_arch, curve25519_dalek_bits) {
-                    true => "simd",
-                    // If override is not possible this must result to compile error
-                    // See: issues/532
-                    false => panic!("Could not override curve25519_dalek_backend to simd"),
-                }
-            }
-            // default between serial / simd (if potentially capable)
-            _ => match is_capable_simd(&target_arch, curve25519_dalek_bits) {
-                true => "simd",
-                false => "serial",
-            },
-        };
+    let curve25519_dalek_backend = "fiat";
     println!("cargo:rustc-cfg=curve25519_dalek_backend=\"{curve25519_dalek_backend}\"");
 }
 
 // Is the target arch & curve25519_dalek_bits potentially simd capable ?
+#[allow(dead_code)]
 fn is_capable_simd(arch: &str, bits: DalekBits) -> bool {
     arch == "x86_64" && bits == DalekBits::Dalek64
 }
